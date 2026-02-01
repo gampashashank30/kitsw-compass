@@ -40,7 +40,6 @@
         .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
     </style>
     <script>
-      window.process = { env: { API_KEY: "" } };
       window.reactMounted = false;
       
       window.onerror = function(msg, url, lineNo, columnNo, error) {
@@ -82,22 +81,6 @@
         }
       }, 40000);
     </script>
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@19.0.0",
-    "react/": "https://esm.sh/react@19.0.0/",
-    "react-dom": "https://esm.sh/react-dom@19.0.0",
-    "react-dom/": "https://esm.sh/react-dom@19.0.0/",
-    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
-    "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime",
-    "recharts": "https://esm.sh/recharts@2.12.7?bundle&external=react,react-dom",
-    "@google/genai": "https://esm.sh/@google/genai@1.35.0",
-    "lucide-react": "https://esm.sh/lucide-react@0.462.0?bundle&external=react,react-dom",
-    "framer-motion": "https://esm.sh/framer-motion@11.11.17?bundle&external=react,react-dom"
-  }
-}
-</script>
 </head>
 <body>
     <div id="root">
@@ -110,6 +93,6 @@
         </div>
     </div>
     <div id="app-error-console"></div>
-    <script type="module" src="./index.tsx" crossorigin></script>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>

@@ -5,11 +5,11 @@ import { SYSTEM_PROMPT } from "../constants.ts";
 const getAI = () => {
   let apiKey = "";
   try {
-    // We strictly use API_KEY as per instructions
-    apiKey = (window as any).process?.env?.API_KEY || "";
+    // Use Vite's import.meta.env for environment variables (must be prefixed with VITE_)
+    apiKey = (import.meta.env.VITE_GEMINI_API_KEY || "") as string;
     
     if (!apiKey) {
-      console.warn("⚠️ API_KEY is missing from environment variables.");
+      console.warn("⚠️ VITE_GEMINI_API_KEY is missing from environment variables.");
     }
   } catch (e) {
     apiKey = "";
@@ -18,10 +18,10 @@ const getAI = () => {
 };
 
 export const generateAcademicAdvice = async (userPrompt: string, studentContext: any) => {
-  const apiKey = (window as any).process?.env?.API_KEY;
+  const apiKey = (import.meta.env.VITE_GEMINI_API_KEY || "") as string;
   
   if (!apiKey) {
-    return "Error: Gemini API Key not found. Please rename your Vercel environment variable to 'API_KEY'.";
+    return "Error: Gemini API Key not found. Please set VITE_GEMINI_API_KEY in your Vercel environment variables.";
   }
 
   const ai = getAI();
@@ -49,7 +49,7 @@ export const generateAcademicAdvice = async (userPrompt: string, studentContext:
 };
 
 export const extractStudentDetailsFromImage = async (base64Image: string, mimeType: string) => {
-  const apiKey = (window as any).process?.env?.API_KEY;
+  const apiKey = (import.meta.env.VITE_GEMINI_API_KEY || "") as string;
   if (!apiKey) return null;
 
   const ai = getAI();
