@@ -1,6 +1,8 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Radar, RadarChart, PolarGrid, PolarAngleAxis } from 'recharts';
-import { TrendingUp, AlertCircle, CheckCircle2, MoreHorizontal, Briefcase, Sparkles } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Radar, RadarChart, PolarGrid, PolarAngleAxis, LineChart, Line } from 'recharts';
+import { TrendingUp, AlertCircle, CheckCircle2, MoreHorizontal, Briefcase, Sparkles, Calendar, Clock, ArrowRight } from 'lucide-react';
+import { ACADEMIC_EVENTS, PLACEMENT_ALERTS } from '../constants';
+import { motion } from 'framer-motion';
 
 interface DashboardProps {
   studentData: any;
@@ -8,21 +10,33 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
-  const attendanceData = [
-    { name: 'Mon', value: 85 },
-    { name: 'Tue', value: 92 },
-    { name: 'Wed', value: studentData.attendance || 0 },
-    { name: 'Thu', value: 78 },
-    { name: 'Fri', value: 88 },
+  // CGPA trend data (semester-wise)
+  const cgpaTrend = [
+    { semester: 'S1', cgpa: 8.2 },
+    { semester: 'S2', cgpa: studentData.cgpa || 8.84 },
+    { semester: 'S3', cgpa: 8.9 },
+    { semester: 'S4', cgpa: 8.7 },
   ];
 
-  const difficultyData = [
-    { subject: 'DAA', A: 85, fullMark: 100 },
-    { subject: 'OS', A: 70, fullMark: 100 },
-    { subject: 'DBMS', A: 45, fullMark: 100 },
-    { subject: 'COA', A: 90, fullMark: 100 },
-    { subject: 'M-III', A: 65, fullMark: 100 },
-  ];
+  // Subject-wise grade distribution
+  const gradeData = studentData.courses?.map((course: any) => {
+    const cieTotal = course.minors[0] + course.minors[1] + course.mse + course.gcbaa;
+    const percentage = ((cieTotal / 150) * 100).toFixed(1);
+    return {
+      subject: course.name,
+      percentage: parseFloat(percentage),
+      cie: cieTotal
+    };
+  }) || [];
+
+  // Upcoming events (next 3-4)
+  const upcomingEvents = ACADEMIC_EVENTS.slice(0, 3);
+  
+  // Top placement opportunities
+  const topPlacements = PLACEMENT_ALERTS.filter(p => p.match >= 70).slice(0, 3);
+
+  // Calculate credits earned
+  const creditsEarned = (studentData.semester || 1) * 16;
 
   return (
     <div className="space-y-6">
@@ -83,9 +97,111 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
         </div>
       </div>
 
+      {/* Upcoming Events Section */}
+      <div className="glass rounded-[2rem] p-8 border border-white/40 shadow-lg">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-black text-slate-800 text-lg tracking-tight flex items-center gap-2">
+            <Calendar className="text-indigo-600" size={20} />
+            Upcoming Events
+          </h3>
+          <button className="text-xs font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700">
+            View All
+          </button>
+        </div>
+        <div className="space-y-3">
+          {upcomingEvents.map((event, idx) => {
+            const eventDate = new Date(event.date);
+            const daysUntil = Math.ceil((eventDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+            return (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-slate-100 hover:shadow-md transition-all group"
+              >
+                <div className="flex flex-col items-center justify-center w-16 h-16 bg-indigo-50 rounded-xl border border-indigo-100">
+                  <span className="text-[10px] font-black text-indigo-600 uppercase">{eventDate.toLocaleDateString('en-US', { month: 'short' })}</span>
+                  <span className="text-xl font-black text-indigo-900">{eventDate.getDate()}</span>
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-slate-800 mb-1">{event.event}</h4>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
+                      event.type === 'exam' ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600'
+                    }`}>
+                      {event.type}
+                    </span>
+                    <span className="text-xs text-slate-500 font-medium">
+                      {daysUntil > 0 ? `${daysUntil} days away` : 'Today'}
+                    </span>
+                  </div>
+                </div>
+                <Clock size={16} className="text-slate-300 group-hover:text-indigo-600 transition-colors" />
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Placement Opportunities */}
+      {topPlacements.length > 0 && (
+        <div className="glass rounded-[2rem] p-8 border border-white/40 shadow-lg">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-black text-slate-800 text-lg tracking-tight flex items-center gap-2">
+              <Briefcase className="text-indigo-600" size={20} />
+              Top Placement Matches
+            </h3>
+            <button className="text-xs font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700">
+              View All
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {topPlacements.map((placement, idx) => (
+              <motion.div
+                key={placement.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                className="p-5 bg-white rounded-2xl border border-slate-100 hover:shadow-lg hover:border-indigo-200 transition-all group"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <h4 className="font-black text-slate-800 text-sm mb-1">{placement.company}</h4>
+                    <p className="text-xs text-slate-500 font-medium">{placement.role}</p>
+                  </div>
+                  <div className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase ${
+                    placement.match >= 90 ? 'bg-emerald-100 text-emerald-700' :
+                    placement.match >= 80 ? 'bg-indigo-100 text-indigo-700' :
+                    'bg-amber-100 text-amber-700'
+                  }`}>
+                    {placement.match}% match
+                  </div>
+                </div>
+                <div className="space-y-2 mb-4">
+                  {placement.stipend && (
+                    <p className="text-xs font-bold text-slate-700">💰 {placement.stipend}</p>
+                  )}
+                  {placement.lpa && (
+                    <p className="text-xs font-bold text-slate-700">💰 {placement.lpa}</p>
+                  )}
+                  <p className="text-[10px] text-slate-400">Deadline: {new Date(placement.deadline).toLocaleDateString()}</p>
+                </div>
+                <button className="w-full py-2 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-100 transition-colors group-hover:gap-2 flex items-center justify-center gap-1">
+                  Apply <ArrowRight size={12} />
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <button 
-          onClick={onSyncClick} 
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={onSyncClick}
           className="text-left bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden group shadow-2xl hover:shadow-indigo-500/20 transition-all border border-slate-800"
         >
           <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-25 transition-opacity duration-500 group-hover:rotate-12">
@@ -98,9 +214,12 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
               Sync Now <TrendingUp size={16} />
             </div>
           </div>
-        </button>
+        </motion.button>
 
-        <div className="bg-indigo-600 rounded-[2.5rem] p-10 text-white relative overflow-hidden group shadow-2xl border border-indigo-500">
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          className="bg-indigo-600 rounded-[2.5rem] p-10 text-white relative overflow-hidden group shadow-2xl border border-indigo-500"
+        >
           <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
             <Briefcase size={160} />
           </div>
@@ -111,7 +230,7 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
           <div className="inline-flex items-center gap-3 px-6 py-3 bg-white text-indigo-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-indigo-50 transition-all shadow-xl shadow-indigo-700/20">
             Check Matches
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
