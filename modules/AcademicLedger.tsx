@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  BookOpen, Award, BarChart4, Target, ShieldAlert, 
+  BookOpen, Award, BarChart3, Target, ShieldAlert, 
   Zap, Info, TrendingUp, ChevronDown, Sparkles,
   PieChart, Activity, CheckCircle2, AlertTriangle
 } from 'lucide-react';
@@ -16,12 +15,7 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
 
   const courses = studentData.courses || [];
 
-  // Logic for Grade Strike based on URR24 ESE (60 marks max)
-  const getESEThreshold = (cie: number, targetTotal: number) => {
-    // total = (cie/150 * 40) + ESE
-    // But KITSW usually does CIE(40) + ESE(60).
-    // Assuming the input 'cie' is already the 150-scaled internal total.
-    // Normalized CIE (out of 40) = (cie / 150) * 40
+  const getESEThreshold = (cie: number = 0, targetTotal: number) => {
     const normalizedCIE = (cie / 150) * 40;
     const neededInESE = targetTotal - normalizedCIE;
     
@@ -30,9 +24,9 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
     return Math.ceil(neededInESE);
   };
 
-  const getPredictedGrade = (cie: number) => {
+  const getPredictedGrade = (cie: number = 0) => {
     const normalizedCIE = (cie / 150) * 40;
-    const projectedESE = 45; // Assume average ESE performance
+    const projectedESE = 45; 
     const total = normalizedCIE + projectedESE;
     if (total >= 90) return 'S';
     if (total >= 80) return 'A+';
@@ -49,7 +43,7 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
             <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Roll: {studentData.rollNumber}</span>
           </div>
           <h2 className="text-4xl font-black text-slate-800 tracking-tighter leading-none">
-            {studentData.name?.split(' ').pop() || 'Shashank'}'s <span className="text-indigo-600">Command Ledger</span>
+            {studentData.name?.split(' ').pop() || 'Student'}'s <span className="text-indigo-600">Command Ledger</span>
           </h2>
           <p className="text-slate-500 text-sm mt-3 font-medium max-w-xl">
             Real-time tracking of internals for {studentData.branch} URR24 curriculum.
@@ -159,7 +153,7 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
                   <div className="w-16 h-16 bg-slate-100 text-slate-300 rounded-3xl flex items-center justify-center mx-auto mb-4">
                     <BookOpen size={32} />
                   </div>
-                  <p className="text-slate-400 font-bold uppercase text-xs tracking-widest">No Course Data Sync Required</p>
+                  <p className="text-slate-400 font-bold uppercase text-xs tracking-widest">No Course Data Found</p>
                 </div>
               )}
             </div>
@@ -176,12 +170,9 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
               Strategic ROI
             </h3>
             <div className="space-y-6 mb-8">
-              <ROIItem label="Theory Stability" value={Math.round((courses.reduce((acc: any, c: any) => acc + (c.mse/45), 0) / courses.length) * 100) || 0} color="bg-indigo-500" />
+              <ROIItem label="Theory Stability" value={Math.round((courses.reduce((acc: any, c: any) => acc + (c.mse/45), 0) / (courses.length || 1)) * 100) || 0} color="bg-indigo-500" />
               <ROIItem label="Activity Efficiency" value={studentData.activities?.sea || 0} color="bg-emerald-500" />
               <ROIItem label="Practicum Score" value={studentData.activities?.practicum || 0} color="bg-amber-500" />
-            </div>
-            <div className="p-4 bg-white/5 rounded-2xl border border-white/10 text-[10px] text-slate-400 italic">
-              AI Insight: {studentData.activities?.sea > 90 ? "Elite activity score detected. Your internals are safe even with average ESE performance." : "Focus on improving SEA/Practicum components for CGPA protection."}
             </div>
           </div>
 
@@ -212,7 +203,7 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
               />
             </div>
             <button className="w-full mt-8 py-4 bg-slate-50 text-slate-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-colors border border-slate-200 flex items-center justify-center gap-2">
-              <Info size={14} /> Full Regulation PDF
+              <Info size={14} /> Regulation Handbook
             </button>
           </div>
         </div>
@@ -221,9 +212,8 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
   );
 };
 
-// Sub-components
 const AuditCard: React.FC<{label: string, value: string, color: string, icon: React.ReactNode}> = ({label, value, color, icon}) => (
-  <div className="bg-white px-6 py-4 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4 transition-all hover:shadow-md">
+  <div className="bg-white px-6 py-4 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
     <div className={`w-10 h-10 rounded-2xl bg-slate-50 ${color} flex items-center justify-center shadow-inner`}>
       {icon}
     </div>
@@ -242,7 +232,7 @@ const LegendItem: React.FC<{color: string, label: string}> = ({color, label}) =>
 );
 
 const GradeStrikeBox: React.FC<{label: string, value: string | number, sub: string}> = ({label, value, sub}) => (
-  <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/50 hover:bg-white hover:shadow-sm transition-all">
+  <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/50 hover:bg-white transition-all">
     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{label}</p>
     <p className={`text-2xl font-black ${value === 'Unreachable' ? 'text-rose-500' : (value === 'Guaranteed' ? 'text-emerald-500' : 'text-slate-800')}`}>{value}</p>
     <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">{sub}</p>
@@ -262,7 +252,7 @@ const ROIItem: React.FC<{label: string, value: number, color: string}> = ({label
 );
 
 const RegulationRow: React.FC<{clause: string, title: string, desc: string, status: string, isDanger?: boolean}> = ({clause, title, desc, status, isDanger}) => (
-  <div className={`p-4 rounded-2xl border transition-all ${isDanger ? 'bg-rose-50 border-rose-100' : 'bg-slate-50 border-slate-100 hover:bg-white hover:shadow-md'}`}>
+  <div className={`p-4 rounded-2xl border transition-all ${isDanger ? 'bg-rose-50 border-rose-100' : 'bg-slate-50 border-slate-100 hover:bg-white'}`}>
     <div className="flex justify-between items-start mb-1">
       <span className="text-[9px] font-black text-indigo-500 uppercase tracking-[0.2em]">{clause}</span>
       <span className={`text-[9px] font-black uppercase tracking-widest ${isDanger ? 'text-rose-600' : 'text-emerald-500'}`}>{status}</span>

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Radar, RadarChart, PolarGrid, PolarAngleAxis } from 'recharts';
 import { TrendingUp, AlertCircle, CheckCircle2, MoreHorizontal, Briefcase, Sparkles } from 'lucide-react';
@@ -9,11 +8,10 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
-  // Weekly data (mocked but could be derived)
   const attendanceData = [
     { name: 'Mon', value: 85 },
     { name: 'Tue', value: 92 },
-    { name: 'Wed', value: studentData.attendance },
+    { name: 'Wed', value: studentData.attendance || 0 },
     { name: 'Thu', value: 78 },
     { name: 'Fri', value: 88 },
   ];

@@ -1,16 +1,15 @@
-
 import React, { useState } from 'react';
-import Layout from './components/Layout.tsx';
-import Dashboard from './modules/Dashboard.tsx';
-import AttendanceModule from './modules/AttendanceModule.tsx';
-import AIAdvisor from './modules/AIAdvisor.tsx';
-import DigitalTwin from './modules/DigitalTwin.tsx';
-import Simulator from './modules/Simulator.tsx';
-import PlacementPulse from './modules/PlacementPulse.tsx';
-import ExamHub from './modules/ExamHub.tsx';
-import AcademicLedger from './modules/AcademicLedger.tsx';
-import ProfileSyncModal from './components/ProfileSyncModal.tsx';
-import { MOCK_STUDENT_DATA } from './constants.ts';
+import Layout from './components/Layout';
+import Dashboard from './modules/Dashboard';
+import AttendanceModule from './modules/AttendanceModule';
+import AIAdvisor from './modules/AIAdvisor';
+import DigitalTwin from './modules/DigitalTwin';
+import Simulator from './modules/Simulator';
+import PlacementPulse from './modules/PlacementPulse';
+import ExamHub from './modules/ExamHub';
+import AcademicLedger from './modules/AcademicLedger';
+import ProfileSyncModal from './components/ProfileSyncModal';
+import { MOCK_STUDENT_DATA } from './constants';
 import { AnimatePresence } from 'framer-motion';
 
 const App: React.FC = () => {
@@ -24,7 +23,7 @@ const App: React.FC = () => {
       ...newData
     }));
     setIsSyncModalOpen(false);
-    setActiveTab('academic-ledger'); // Switch to results view after sync
+    setActiveTab('academic-ledger');
   };
 
   const renderContent = () => {

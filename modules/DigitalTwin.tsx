@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { TrendingUp, ShieldCheck } from 'lucide-react';
@@ -9,7 +8,7 @@ interface DigitalTwinProps {
 }
 
 const DigitalTwin: React.FC<DigitalTwinProps> = ({ studentData }) => {
-  const [backlogSimCount, setBacklogSimCount] = useState(studentData.backlogs);
+  const [backlogSimCount, setBacklogSimCount] = useState(studentData.backlogs || 0);
 
   const futureProjection = [
     { sem: 'Sem 1', cgpa: 8.2 },
@@ -38,7 +37,7 @@ const DigitalTwin: React.FC<DigitalTwinProps> = ({ studentData }) => {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full border border-white/10 mb-6">
               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 uppercase">AI Entity: {studentData.name}</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80">AI Entity: {studentData.name}</span>
             </div>
             <h2 className="text-4xl lg:text-6xl font-black tracking-tight leading-none mb-4 tracking-tighter">Academic<br/>Digital Twin</h2>
             <p className="text-slate-400 text-sm lg:text-base leading-relaxed max-w-md font-medium">Modeling outcomes for {studentData.branch} B.Tech based on current {studentData.cgpa} CGPA trajectory.</p>
@@ -112,7 +111,7 @@ const DigitalTwin: React.FC<DigitalTwinProps> = ({ studentData }) => {
                 initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
                 className={`p-5 rounded-2xl text-sm font-medium ${backlogSimCount > 4 ? 'bg-rose-50 text-rose-700' : 'bg-blue-50 text-blue-700'} border border-slate-100`}
               >
-                {backlogSimCount === 0 && `Arjun, maintaining zero backlogs preserves your eligibility for First Class with Distinction and Honors tracks in ${studentData.branch}.`}
+                {backlogSimCount === 0 && `Maintaining zero backlogs preserves your eligibility for First Class with Distinction and Honors tracks in ${studentData.branch}.`}
                 {backlogSimCount > 0 && backlogSimCount <= 4 && `With ${backlogSimCount} backlogs, your CGPA will likely drop below 7.5. Promotion remains safe, but placement eligibility is at risk.`}
                 {backlogSimCount > 4 && "CRITICAL: URR24 Promotion rules (Clause 5.2) flag 5+ backlogs as high-risk for Year 3 promotion eligibility."}
               </motion.div>
@@ -136,7 +135,7 @@ const DigitalTwin: React.FC<DigitalTwinProps> = ({ studentData }) => {
             <h4 className="font-black text-slate-800 text-[10px] uppercase tracking-[0.2em] mb-8">Semester Load Analysis</h4>
             <div className="space-y-8">
               <LoadBar label="Math Complexity" value={85} color="bg-rose-400" />
-              <LoadBar label="Coding Complexity" value={studentData.branch.includes('CS') ? 92 : 45} color="bg-indigo-400" />
+              <LoadBar label="Coding Complexity" value={studentData.branch?.includes('CS') ? 92 : 45} color="bg-indigo-400" />
               <LoadBar label="Core Theory" value={60} color="bg-emerald-400" />
             </div>
           </div>
