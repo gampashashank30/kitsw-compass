@@ -9,16 +9,40 @@ interface AIAdvisorProps {
 }
 
 const AIAdvisor: React.FC<AIAdvisorProps> = ({ studentData }) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
+  // Load chat history from localStorage
+  const loadChatHistory = (): ChatMessage[] => {
+    try {
+      const saved = localStorage.getItem(`chat_history_${studentData.rollNumber}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp)
+        }));
+      }
+    } catch (e) {
+      console.error('Failed to load chat history:', e);
+    }
+    return [{
       role: 'assistant',
       content: `Hello ${studentData.name}! I'm your Student Compass AI. I've synced with your profile: ${studentData.branch} (Roll: ${studentData.rollNumber}). How can I help you navigate your URR24 regulations today?`,
       timestamp: new Date()
-    }
-  ]);
+    }];
+  };
+
+  const [messages, setMessages] = useState<ChatMessage[]>(loadChatHistory);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Save chat history to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(`chat_history_${studentData.rollNumber}`, JSON.stringify(messages));
+    } catch (e) {
+      console.error('Failed to save chat history:', e);
+    }
+  }, [messages, studentData.rollNumber]);
 
   useEffect(() => {
     if (messages.length === 1) {
@@ -36,16 +60,17 @@ const AIAdvisor: React.FC<AIAdvisorProps> = ({ studentData }) => {
     }
   }, [messages, loading]);
 
-  const handleSend = async () => {
-    if (!input.trim() || loading) return;
+  const handleSend = async (customInput?: string) => {
+    const messageToSend = customInput || input;
+    if (!messageToSend.trim() || loading) return;
 
-    const userMsg: ChatMessage = { role: 'user', content: input, timestamp: new Date() };
+    const userMsg: ChatMessage = { role: 'user', content: messageToSend, timestamp: new Date() };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
 
     try {
-      const advice = await generateAcademicAdvice(input, studentData);
+      const advice = await generateAcademicAdvice(messageToSend, studentData);
       setMessages(prev => [...prev, { role: 'assistant', content: advice, timestamp: new Date() }]);
     } catch (error) {
       setMessages(prev => [...prev, { 
@@ -123,7 +148,7 @@ const AIAdvisor: React.FC<AIAdvisorProps> = ({ studentData }) => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+              onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
               placeholder="Query URR24 regulations..."
               className="flex-1 bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-4 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800 transition-all font-medium placeholder:text-slate-400"
             />
@@ -136,11 +161,17 @@ const AIAdvisor: React.FC<AIAdvisorProps> = ({ studentData }) => {
             </button>
           </div>
           <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide">
-            {["Detention rules?", "Promotion to Year 3?", "How to get Honors?"].map((text) => (
+            {[
+              "Analyze my current performance",
+              "What subjects need attention?",
+              "Am I on track for promotion?",
+              "Placement preparation roadmap",
+              "Explain URR24 grading system"
+            ].map((text) => (
               <button 
                 key={text}
-                onClick={() => setInput(text)}
-                className="whitespace-nowrap px-4 py-2 bg-white text-slate-500 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-slate-50 border border-slate-100 transition-colors"
+                onClick={() => handleSend(text)}
+                className="whitespace-nowrap px-4 py-2 bg-white text-slate-500 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 hover:text-indigo-600 border border-slate-100 transition-colors"
               >
                 {text}
               </button>
