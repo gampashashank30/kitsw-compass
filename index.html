@@ -13,39 +13,88 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
         }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+        #app-error-console {
+            position: fixed;
+            inset: 0;
+            background: white;
+            z-index: 9999;
+            display: none;
+            padding: 2rem;
+            overflow-y: auto;
         }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #e2e8f0;
-            border-radius: 10px;
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
         }
     </style>
+    <script>
+      // Initial Environment Setup
+      window.process = { env: { API_KEY: "" } };
+      window.reactMounted = false;
+      
+      window.onerror = function(msg, url, lineNo, columnNo, error) {
+        const consoleEl = document.getElementById('app-error-console');
+        if (consoleEl) {
+            consoleEl.style.display = 'block';
+            consoleEl.innerHTML = `
+                <div style="max-width: 600px; margin: 0 auto; font-family: sans-serif; padding-top: 15vh;">
+                    <div style="background: #fff1f2; border: 1px solid #fda4af; padding: 2rem; border-radius: 1.5rem; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);">
+                        <h1 style="color: #be123c; font-size: 24px; font-weight: 900; margin-bottom: 0.5rem;">System Error</h1>
+                        <p style="color: #9f1239; font-size: 14px; margin-bottom: 2rem;">The application failed to initialize properly.</p>
+                        <div style="background: #ffffff; padding: 1rem; border-radius: 0.75rem; border: 1px solid #fecdd3; font-family: monospace; font-size: 12px; color: #4c0519; overflow-x: auto;">
+                            <strong>Message:</strong> ${msg}<br>
+                            <strong>File:</strong> ${url?.split('/').pop() || 'unknown'}<br>
+                            <strong>Line:</strong> ${lineNo}
+                        </div>
+                        <button onclick="location.reload()" style="margin-top: 2rem; background: #be123c; color: white; border: none; padding: 12px 24px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%;">Hard Refresh</button>
+                    </div>
+                </div>
+            `;
+        }
+        return false;
+      };
+
+      // Increase safety timeout to 25 seconds for slow CDNs
+      setTimeout(() => {
+        if (!window.reactMounted && !document.getElementById('app-error-console').style.display) {
+            window.onerror("App timed out while fetching modules. This is likely a CDN connection issue or a browser script block.", "cdn-network", 0, 0);
+        }
+      }, 25000);
+    </script>
 <script type="importmap">
 {
   "imports": {
-    "recharts": "https://esm.sh/recharts@^2.12.7",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-    "framer-motion": "https://esm.sh/framer-motion@^11.0.8"
+    "react": "https://esm.sh/react@19.0.0",
+    "react/": "https://esm.sh/react@19.0.0/",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react-dom/": "https://esm.sh/react-dom@19.0.0/",
+    "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
+    "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime",
+    "recharts": "https://esm.sh/recharts@2.12.7?external=react,react-dom",
+    "@google/genai": "https://esm.sh/@google/genai@1.35.0",
+    "lucide-react": "https://esm.sh/lucide-react@0.462.0?external=react,react-dom",
+    "framer-motion": "https://esm.sh/framer-motion@11.11.17?external=react,react-dom"
   }
 }
 </script>
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">
+        <div style="display: flex; height: 100vh; width: 100vw; align-items: center; justify-content: center; background: #f8fafc; flex-direction: column;">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: 16px; font-family: sans-serif; font-weight: 600; color: #94a3b8; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;">Connecting to KITSW...</p>
+        </div>
+    </div>
+    <div id="app-error-console"></div>
+    <script type="module" src="./index.tsx" crossorigin></script>
 </body>
 </html>

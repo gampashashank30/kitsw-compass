@@ -2,7 +2,7 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Camera, Upload, Sparkles, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
-import { extractStudentDetailsFromImage } from '../services/gemini';
+import { extractStudentDetailsFromImage } from '../services/gemini.ts';
 
 interface ProfileSyncModalProps {
   onClose: () => void;

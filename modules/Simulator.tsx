@@ -1,7 +1,7 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Plus, Trash2, Calculator, Info, Target, Sparkles } from 'lucide-react';
-import { URR24_POLICIES } from '../constants';
+import { URR24_POLICIES } from '../constants.ts';
 
 interface SubjectSim {
   id: string;

@@ -1,8 +1,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Sparkles } from 'lucide-react';
-import { generateAcademicAdvice } from '../services/gemini';
-import { ChatMessage } from '../types';
+import { generateAcademicAdvice } from '../services/gemini.ts';
+import { ChatMessage } from '../types.ts';
 
 interface AIAdvisorProps {
   studentData: any;
@@ -20,7 +20,6 @@ const AIAdvisor: React.FC<AIAdvisorProps> = ({ studentData }) => {
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Update initial greeting if profile syncs
   useEffect(() => {
     if (messages.length === 1) {
       setMessages([{

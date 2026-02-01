@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Calendar, Bell, Download, Clock, AlertTriangle } from 'lucide-react';
-import { ACADEMIC_EVENTS } from '../constants';
+import { ACADEMIC_EVENTS } from '../constants.ts';
 
 const ExamHub: React.FC = () => {
   return (

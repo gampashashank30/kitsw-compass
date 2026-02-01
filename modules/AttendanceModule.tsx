@@ -1,22 +1,21 @@
 
 import React, { useState, useEffect } from 'react';
 import { Info, Calculator, Flame } from 'lucide-react';
-import { URR24_POLICIES } from '../constants';
+import { URR24_POLICIES } from '../constants.ts';
 
 interface AttendanceModuleProps {
   studentData: any;
 }
 
 const AttendanceModule: React.FC<AttendanceModuleProps> = ({ studentData }) => {
-  // Derive initial values from synced student data
-  const initialAttended = Math.round((studentData.attendance / 100) * URR24_POLICIES.ATTENDANCE.TOTAL_WORKING_DAYS);
+  const totalDays = URR24_POLICIES.ATTENDANCE.TOTAL_WORKING_DAYS;
+  const initialAttended = Math.round((studentData.attendance / 100) * totalDays);
   const [attended, setAttended] = useState(initialAttended);
-  const [total, setTotal] = useState(URR24_POLICIES.ATTENDANCE.TOTAL_WORKING_DAYS);
+  const [total, setTotal] = useState(totalDays);
 
-  // Sync internal state if studentData changes (e.g., after AI Sync)
   useEffect(() => {
     setAttended(Math.round((studentData.attendance / 100) * total));
-  }, [studentData.attendance]);
+  }, [studentData.attendance, total]);
 
   const percentage = (attended / total) * 100;
   const isSafe = percentage >= URR24_POLICIES.ATTENDANCE.MIN_REQUIRED;

@@ -27,19 +27,31 @@ export const URR24_POLICIES = {
 };
 
 export const MOCK_STUDENT_DATA = {
-  name: "Arjun Reddy",
-  rollNumber: "B21CS001",
+  name: "Gampa Shashank",
+  rollNumber: "B25CS266",
   branch: Branch.CSE,
-  semester: 4,
-  attendance: 72.5,
+  semester: 2,
+  attendance: 84.5,
   backlogs: 0,
-  cgpa: 8.42
+  cgpa: 8.84,
+  courses: [
+    { name: 'BEE', cie: 128, mse: 45, minors: [19, 14], gcbaa: 50 },
+    { name: 'COA', cie: 118, mse: 31, minors: [20, 17], gcbaa: 50 },
+    { name: 'DCODE', cie: 141, mse: 46, minors: [24, 21], gcbaa: 50 },
+    { name: 'EP', cie: 129, mse: 45, minors: [11, 23], gcbaa: 50 },
+    { name: 'ES', cie: 123, mse: 35, minors: [20, 18], gcbaa: 50 },
+    { name: 'PPSC', cie: 121, mse: 33, minors: [21, 17], gcbaa: 50 },
+  ],
+  activities: {
+    sea: 94,
+    practicum: 90
+  }
 };
 
 export const PLACEMENT_ALERTS = [
-  { id: 1, company: "Google", role: "SDE Intern", stipend: "1.2L/mo", deadline: "2024-05-15", match: 88 },
-  { id: 2, company: "NVIDIA", role: "AI Research Associate", stipend: "80K/mo", deadline: "2024-05-20", match: 94 },
-  { id: 3, company: "Microsoft", role: "Full Stack Developer", lpa: "44 LPA", deadline: "2024-06-01", match: 72 }
+  { id: 1, company: "Google", role: "SDE Intern", stipend: "1.2L/mo", deadline: "2024-05-15", match: 88, minCgpa: 8.5 },
+  { id: 2, company: "NVIDIA", role: "AI Research Associate", stipend: "80K/mo", deadline: "2024-05-20", match: 94, minCgpa: 8.0 },
+  { id: 3, company: "Microsoft", role: "Full Stack Developer", lpa: "44 LPA", deadline: "2024-06-01", match: 72, minCgpa: 7.5 }
 ];
 
 export const ACADEMIC_EVENTS = [
@@ -50,17 +62,12 @@ export const ACADEMIC_EVENTS = [
 ];
 
 export const SYSTEM_PROMPT = `
-You are the KITSW Student Compass AI, an expert on the URR24 (Undergraduate Rules & Regulations 2024) of Kakatiya Institute of Technology & Science, Warangal.
-Your goal is to provide accurate, helpful, and concise academic advice based on URR24 rules.
+You are the KITSW Student Compass AI, an expert on the URR24 regulations.
+You have access to the student's real marks from the portal.
+Terminologies: CIE (Continuous Internal Evaluation), ESE (End Semester Exam), MSE (Mid Semester Exam), GCBAA (Group Class Based Academic Activity).
 
-KEY URR24 RULES SUMMARY:
-1. Attendance: 75% minimum required. Condonation (65-74%) allowed with medical proof and fee. <65% results in detention.
-2. Grading: S=10 (90+), A+=9 (80-89), A=8 (70-79), B+=7 (60-69), B=6 (50-59), C=5 (45-49), P=4 (40-44), F=0 (<40).
-3. Promotion: Student must clear 50% of total credits of 1st year to move to 3rd year, and 60% of total credits of 1st and 2nd years combined to move to 4th year.
-4. Minor/Honors: Requires CGPA >= 7.0 and zero backlogs. 18-20 extra credits.
-
-When answering:
-- Always cite the URR24 Clause if applicable.
-- Provide a recovery "Survival Plan" for at-risk students.
-- Use terminology like CIE, ESE, and MTTCA.
+If a student asks about their grades, use their specific marks (e.g., BEE 128/150).
+Clause 4.1: Attendance 75% min.
+Clause 5.1: Promotion rules.
+Clause 6.1: Honors Track requires CGPA >= 7.0 & 0 backlogs.
 `;

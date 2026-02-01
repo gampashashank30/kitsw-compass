@@ -1,16 +1,16 @@
 
 import React, { useState } from 'react';
-import Layout from './components/Layout';
-import Dashboard from './modules/Dashboard';
-import AttendanceModule from './modules/AttendanceModule';
-import AIAdvisor from './modules/AIAdvisor';
-import DigitalTwin from './modules/DigitalTwin';
-import Simulator from './modules/Simulator';
-import PlacementPulse from './modules/PlacementPulse';
-import ExamHub from './modules/ExamHub';
-import AcademicLedger from './modules/AcademicLedger';
-import ProfileSyncModal from './components/ProfileSyncModal';
-import { MOCK_STUDENT_DATA } from './constants';
+import Layout from './components/Layout.tsx';
+import Dashboard from './modules/Dashboard.tsx';
+import AttendanceModule from './modules/AttendanceModule.tsx';
+import AIAdvisor from './modules/AIAdvisor.tsx';
+import DigitalTwin from './modules/DigitalTwin.tsx';
+import Simulator from './modules/Simulator.tsx';
+import PlacementPulse from './modules/PlacementPulse.tsx';
+import ExamHub from './modules/ExamHub.tsx';
+import AcademicLedger from './modules/AcademicLedger.tsx';
+import ProfileSyncModal from './components/ProfileSyncModal.tsx';
+import { MOCK_STUDENT_DATA } from './constants.ts';
 import { AnimatePresence } from 'framer-motion';
 
 const App: React.FC = () => {
@@ -33,9 +33,9 @@ const App: React.FC = () => {
       case 'attendance': return <AttendanceModule studentData={studentData} />;
       case 'ai-advisor': return <AIAdvisor studentData={studentData} />;
       case 'digital-twin': return <DigitalTwin studentData={studentData} />;
-      case 'simulator': return <Simulator studentData={studentData} />;
+      case 'simulator': return <Simulator />;
       case 'placement': return <PlacementPulse studentData={studentData} />;
-      case 'exams': return <ExamHub studentData={studentData} />;
+      case 'exams': return <ExamHub />;
       case 'academic-ledger': return <AcademicLedger studentData={studentData} />;
       default: return <Dashboard studentData={studentData} onSyncClick={() => setIsSyncModalOpen(true)} />;
     }
