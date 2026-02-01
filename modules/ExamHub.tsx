@@ -51,7 +51,7 @@ const ExamHub: React.FC = () => {
             <Clock className="text-indigo-200 mb-4" size={32} />
             <h4 className="text-lg font-black mb-2 tracking-tight">Make-up & Improvement</h4>
             <p className="text-indigo-100 text-xs leading-relaxed mb-6">
-              Missing an exam? Under URR24 Clause 6.4, you are eligible for Make-up exams if your attendance is >75%.
+              Missing an exam? Under URR24 Clause 6.4, you are eligible for Make-up exams if your attendance is &gt;75%.
             </p>
             <button className="w-full py-3 bg-white text-indigo-600 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-indigo-50 transition-colors">
               Check Eligibility
