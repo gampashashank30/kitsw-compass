@@ -10,6 +10,32 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
+  // Attendance data for chart
+  const attendanceData = [
+    { name: 'Mon', value: 85 },
+    { name: 'Tue', value: 92 },
+    { name: 'Wed', value: studentData.attendance || 0 },
+    { name: 'Thu', value: 78 },
+    { name: 'Fri', value: 88 },
+  ];
+
+  // Difficulty/performance data for radar chart
+  const difficultyData = studentData.courses?.map((course: any) => {
+    const cieTotal = course.minors[0] + course.minors[1] + course.mse + course.gcbaa;
+    const percentage = ((cieTotal / 150) * 100);
+    return {
+      subject: course.name,
+      A: percentage,
+      fullMark: 100
+    };
+  }) || [
+    { subject: 'DAA', A: 85, fullMark: 100 },
+    { subject: 'OS', A: 70, fullMark: 100 },
+    { subject: 'DBMS', A: 45, fullMark: 100 },
+    { subject: 'COA', A: 90, fullMark: 100 },
+    { subject: 'M-III', A: 65, fullMark: 100 },
+  ];
+
   // CGPA trend data (semester-wise)
   const cgpaTrend = [
     { semester: 'S1', cgpa: 8.2 },
