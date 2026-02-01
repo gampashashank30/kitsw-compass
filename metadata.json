@@ -1,0 +1,7 @@
+{
+  "name": "KITSW Student Compass",
+  "description": "A futuristic academic navigation system for B.Tech students under URR24 regulations, featuring AI-powered advisors, digital twins, and academic simulators.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
