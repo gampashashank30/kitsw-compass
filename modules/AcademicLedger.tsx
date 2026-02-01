@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  BookOpen, Award, BarChart3, Target, ShieldAlert, 
+import {
+  BookOpen, Award, BarChart3, Target, ShieldAlert,
   Zap, Info, TrendingUp, ChevronDown, Sparkles,
   PieChart, Activity, CheckCircle2, AlertTriangle
 } from 'lucide-react';
@@ -18,7 +18,7 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
   const getESEThreshold = (cie: number = 0, targetTotal: number) => {
     const normalizedCIE = (cie / 150) * 40;
     const neededInESE = targetTotal - normalizedCIE;
-    
+
     if (neededInESE > 60) return 'Unreachable';
     if (neededInESE <= 0) return 'Guaranteed';
     return Math.ceil(neededInESE);
@@ -26,7 +26,7 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
 
   const getPredictedGrade = (cie: number = 0) => {
     const normalizedCIE = (cie / 150) * 40;
-    const projectedESE = 45; 
+    const projectedESE = 45;
     const total = normalizedCIE + projectedESE;
     if (total >= 90) return 'S';
     if (total >= 80) return 'A+';
@@ -49,19 +49,19 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
             Real-time tracking of internals for {studentData.branch} URR24 curriculum.
           </p>
         </div>
-        
+
         <div className="flex gap-4">
-          <AuditCard 
-            label="Promotion Status" 
-            value={studentData.backlogs > 5 ? "AT RISK" : "ELIGIBLE"} 
-            color={studentData.backlogs > 5 ? "text-rose-500" : "text-emerald-500"} 
-            icon={<CheckCircle2 size={16}/>} 
+          <AuditCard
+            label="Promotion Status"
+            value={studentData.backlogs > 5 ? "AT RISK" : "ELIGIBLE"}
+            color={studentData.backlogs > 5 ? "text-rose-500" : "text-emerald-500"}
+            icon={<CheckCircle2 size={16} />}
           />
-          <AuditCard 
-            label="Honors Track" 
-            value={studentData.cgpa >= 7.0 && studentData.backlogs === 0 ? "QUALIFIED" : "INELIGIBLE"} 
-            color={studentData.cgpa >= 7.0 && studentData.backlogs === 0 ? "text-indigo-600" : "text-slate-400"} 
-            icon={<Award size={16}/>} 
+          <AuditCard
+            label="Honors Track"
+            value={studentData.cgpa >= 7.0 && studentData.backlogs === 0 ? "QUALIFIED" : "INELIGIBLE"}
+            color={studentData.cgpa >= 7.0 && studentData.backlogs === 0 ? "text-indigo-600" : "text-slate-400"}
+            icon={<Award size={16} />}
           />
         </div>
       </div>
@@ -83,7 +83,7 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
 
             <div className="divide-y divide-slate-100">
               {courses.length > 0 ? courses.map((course: any, idx: number) => (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: idx * 0.05 }}
                   key={course.name}
@@ -100,7 +100,7 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
                         <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Internal Mastery: {((course.cie / 150) * 100).toFixed(0)}%</p>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center gap-8">
                       <div className="hidden md:block text-right">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">CIE Score</p>
@@ -120,19 +120,19 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
 
                   <AnimatePresence>
                     {selectedCourse?.name === course.name && (
-                      <motion.div 
+                      <motion.div
                         initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden"
                       >
                         <div className="pt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                          <GradeStrikeBox 
-                            label="Target 'S' (90+)" 
-                            value={getESEThreshold(course.cie, 90)} 
+                          <GradeStrikeBox
+                            label="Target 'S' (90+)"
+                            value={getESEThreshold(course.cie, 90)}
                             sub="ESE Score Required"
                           />
-                          <GradeStrikeBox 
-                            label="Target 'A+' (80+)" 
-                            value={getESEThreshold(course.cie, 80)} 
+                          <GradeStrikeBox
+                            label="Target 'A+' (80+)"
+                            value={getESEThreshold(course.cie, 80)}
                             sub="ESE Score Required"
                           />
                           <div className="bg-slate-900 rounded-2xl p-5 text-white flex flex-col justify-between">
@@ -170,7 +170,7 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
               Strategic ROI
             </h3>
             <div className="space-y-6 mb-8">
-              <ROIItem label="Theory Stability" value={Math.round((courses.reduce((acc: any, c: any) => acc + (c.mse/45), 0) / (courses.length || 1)) * 100) || 0} color="bg-indigo-500" />
+              <ROIItem label="Theory Stability" value={Math.round((courses.reduce((acc: any, c: any) => acc + (c.mse / 45), 0) / (courses.length || 1)) * 100) || 0} color="bg-indigo-500" />
               <ROIItem label="Activity Efficiency" value={studentData.activities?.sea || 0} color="bg-emerald-500" />
               <ROIItem label="Practicum Score" value={studentData.activities?.practicum || 0} color="bg-amber-500" />
             </div>
@@ -182,24 +182,24 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
               URR24 Auditor
             </h3>
             <div className="space-y-4">
-              <RegulationRow 
-                clause="Clause 4.1" 
-                title="Attendance Check" 
-                desc={`${studentData.attendance}% detected.`} 
-                status={studentData.attendance >= 75 ? "SAFE" : "CONDONATION"} 
+              <RegulationRow
+                clause="Clause 4.1"
+                title="Attendance Check"
+                desc={`${studentData.attendance}% detected.`}
+                status={studentData.attendance >= 75 ? "SAFE" : "CONDONATION"}
                 isDanger={studentData.attendance < 75}
               />
-              <RegulationRow 
-                clause="Clause 5.2" 
-                title="Year-3 Promotion" 
-                desc="Credit threshold check." 
-                status={studentData.backlogs === 0 ? "ELIGIBLE" : "PENDING"} 
+              <RegulationRow
+                clause="Clause 5.2"
+                title="Year-3 Promotion"
+                desc="Credit threshold check."
+                status={studentData.backlogs === 0 ? "ELIGIBLE" : "PENDING"}
               />
-              <RegulationRow 
-                clause="Clause 6.1" 
-                title="Honors Eligibility" 
-                desc="Zero backlog & CGPA > 7.0." 
-                status={studentData.cgpa >= 7.0 && studentData.backlogs === 0 ? "QUALIFIED" : "LOCKED"} 
+              <RegulationRow
+                clause="Clause 6.1"
+                title="Honors Eligibility"
+                desc="Zero backlog & CGPA > 7.0."
+                status={studentData.cgpa >= 7.0 && studentData.backlogs === 0 ? "QUALIFIED" : "LOCKED"}
               />
             </div>
             <button className="w-full mt-8 py-4 bg-slate-50 text-slate-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-slate-100 transition-colors border border-slate-200 flex items-center justify-center gap-2">
@@ -209,10 +209,68 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
         </div>
       </div>
     </div>
+
+      {/* Detailed Grade Table */ }
+  <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden">
+    <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+      <h3 className="font-black text-slate-800 tracking-tight flex items-center gap-2">
+        <BookOpen className="text-indigo-600" size={20} />
+        Detailed Grade Sheet
+      </h3>
+      <button className="text-xs font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700 flex items-center gap-2">
+        Download PDF <Sparkles size={14} />
+      </button>
+    </div>
+    <div className="overflow-x-auto">
+      <table className="w-full text-left border-collapse">
+        <thead>
+          <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400">
+            <th className="p-6">Course</th>
+            <th className="p-6 text-center">Credits</th>
+            <th className="p-6 text-center">CIE (150)</th>
+            <th className="p-6 text-center">MSE (45)</th>
+            <th className="p-6 text-center">Minors (30)</th>
+            <th className="p-6 text-center">GCBAA (30)</th>
+            <th className="p-6 text-center">ESE (100)</th>
+            <th className="p-6 text-center">Total (100%)</th>
+            <th className="p-6 text-center">Grade</th>
+            <th className="p-6 text-center">Points</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-100">
+          {courses.map((course: any) => {
+            const totalInternal = course.cie; // Out of 150
+            const ese = course.ese || 0;
+            const total = totalInternal + ese;
+            const percentage = (total / 250) * 100;
+            const gradeInfo = percentage >= 90 ? { g: 'S', p: 10 } : percentage >= 80 ? { g: 'A+', p: 9 } : percentage >= 70 ? { g: 'A', p: 8 } : { g: 'B+', p: 7 };
+
+            return (
+              <tr key={course.name} className="hover:bg-slate-50 transition-colors group">
+                <td className="p-6 font-bold text-slate-800">{course.name}</td>
+                <td className="p-6 text-center font-medium text-slate-500">4</td>
+                <td className="p-6 text-center font-bold text-slate-700">{course.cie}</td>
+                <td className="p-6 text-center text-slate-500">{course.mse}</td>
+                <td className="p-6 text-center text-slate-500">{course.minors.join(' + ')}</td>
+                <td className="p-6 text-center text-slate-500">{course.gcbaa}</td>
+                <td className="p-6 text-center font-medium text-slate-400">{course.ese || '-'}</td>
+                <td className="p-6 text-center font-bold text-indigo-600">{percentage.toFixed(1)}%</td>
+                <td className="p-6 text-center">
+                  <span className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-black">{gradeInfo.g}</span>
+                </td>
+                <td className="p-6 text-center font-bold text-slate-800">{gradeInfo.p}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  </div>
+    </div >
   );
 };
 
-const AuditCard: React.FC<{label: string, value: string, color: string, icon: React.ReactNode}> = ({label, value, color, icon}) => (
+const AuditCard: React.FC<{ label: string, value: string, color: string, icon: React.ReactNode }> = ({ label, value, color, icon }) => (
   <div className="bg-white px-6 py-4 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-4">
     <div className={`w-10 h-10 rounded-2xl bg-slate-50 ${color} flex items-center justify-center shadow-inner`}>
       {icon}
@@ -224,14 +282,14 @@ const AuditCard: React.FC<{label: string, value: string, color: string, icon: Re
   </div>
 );
 
-const LegendItem: React.FC<{color: string, label: string}> = ({color, label}) => (
+const LegendItem: React.FC<{ color: string, label: string }> = ({ color, label }) => (
   <div className="flex items-center gap-2">
     <div className={`w-2 h-2 rounded-full ${color}`} />
     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{label}</span>
   </div>
 );
 
-const GradeStrikeBox: React.FC<{label: string, value: string | number, sub: string}> = ({label, value, sub}) => (
+const GradeStrikeBox: React.FC<{ label: string, value: string | number, sub: string }> = ({ label, value, sub }) => (
   <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200/50 hover:bg-white transition-all">
     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{label}</p>
     <p className={`text-2xl font-black ${value === 'Unreachable' ? 'text-rose-500' : (value === 'Guaranteed' ? 'text-emerald-500' : 'text-slate-800')}`}>{value}</p>
@@ -239,7 +297,7 @@ const GradeStrikeBox: React.FC<{label: string, value: string | number, sub: stri
   </div>
 );
 
-const ROIItem: React.FC<{label: string, value: number, color: string}> = ({label, value, color}) => (
+const ROIItem: React.FC<{ label: string, value: number, color: string }> = ({ label, value, color }) => (
   <div>
     <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-2 opacity-60">
       <span>{label}</span>
@@ -251,7 +309,7 @@ const ROIItem: React.FC<{label: string, value: number, color: string}> = ({label
   </div>
 );
 
-const RegulationRow: React.FC<{clause: string, title: string, desc: string, status: string, isDanger?: boolean}> = ({clause, title, desc, status, isDanger}) => (
+const RegulationRow: React.FC<{ clause: string, title: string, desc: string, status: string, isDanger?: boolean }> = ({ clause, title, desc, status, isDanger }) => (
   <div className={`p-4 rounded-2xl border transition-all ${isDanger ? 'bg-rose-50 border-rose-100' : 'bg-slate-50 border-slate-100 hover:bg-white'}`}>
     <div className="flex justify-between items-start mb-1">
       <span className="text-[9px] font-black text-indigo-500 uppercase tracking-[0.2em]">{clause}</span>

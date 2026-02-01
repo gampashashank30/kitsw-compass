@@ -29,12 +29,12 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
       fullMark: 100
     };
   }) || [
-    { subject: 'DAA', A: 85, fullMark: 100 },
-    { subject: 'OS', A: 70, fullMark: 100 },
-    { subject: 'DBMS', A: 45, fullMark: 100 },
-    { subject: 'COA', A: 90, fullMark: 100 },
-    { subject: 'M-III', A: 65, fullMark: 100 },
-  ];
+      { subject: 'DAA', A: 85, fullMark: 100 },
+      { subject: 'OS', A: 70, fullMark: 100 },
+      { subject: 'DBMS', A: 45, fullMark: 100 },
+      { subject: 'COA', A: 90, fullMark: 100 },
+      { subject: 'M-III', A: 65, fullMark: 100 },
+    ];
 
   // CGPA trend data (semester-wise)
   const cgpaTrend = [
@@ -57,44 +57,85 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
 
   // Upcoming events (next 3-4)
   const upcomingEvents = ACADEMIC_EVENTS.slice(0, 3);
-  
+
   // Top placement opportunities
   const topPlacements = PLACEMENT_ALERTS.filter(p => p.match >= 70).slice(0, 3);
 
-  // Calculate credits earned
-  const creditsEarned = (studentData.semester || 1) * 16;
+  // Academic Health Score Calculation
+  const academicHealthScore = React.useMemo(() => {
+    const cgpaScore = (studentData.cgpa / 10) * 40;
+    const attendanceScore = (studentData.attendance / 100) * 30;
+    // Assuming max activities score is 200 (100 for sea + 100 for practicum)
+    const activitiesScore = ((studentData.activities.sea + studentData.activities.practicum) / 200) * 30;
+    const backlogPenalty = studentData.backlogs * 5;
+    return Math.max(0, Math.min(100, cgpaScore + attendanceScore + activitiesScore - backlogPenalty));
+  }, [studentData]);
+
+  // CGPA Trend Chart (Area Chart)
+  const areaChartData = [
+    { name: 'Sem 1', cgpa: 8.2 },
+    { name: 'Sem 2', cgpa: 8.4 },
+    { name: 'Sem 3', cgpa: studentData.cgpa },
+  ];
 
   return (
     <div className="space-y-6">
+      {/* Hero Section */}
+      <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 rounded-[2rem] p-8 text-white shadow-xl shadow-indigo-200">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div>
+            <h1 className="text-3xl font-black tracking-tight mb-2">Welcome back, {studentData.name.split(' ')[0]}! 👋</h1>
+            <p className="text-indigo-100 font-medium opacity-90">Your academic performance is looking strong this semester.</p>
+          </div>
+          <div className="bg-white/10 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/20">
+            <div className="text-xs font-black uppercase tracking-widest text-indigo-200 mb-1">Academic Health</div>
+            <div className="flex items-end gap-2">
+              <span className="text-3xl font-black">{academicHealthScore.toFixed(1)}</span>
+              <span className="text-sm font-bold opacity-80 mb-1">/ 100</span>
+            </div>
+            <div className="w-32 h-1.5 bg-black/20 rounded-full mt-2 overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${academicHealthScore}%` }}
+                className="h-full bg-gradient-to-r from-green-400 to-emerald-400"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard title="Overall Attendance" value={`${studentData.attendance}%`} status={studentData.attendance < 75 ? "warning" : "success"} subtitle={studentData.attendance < 75 ? `${(75 - studentData.attendance).toFixed(1)}% below safe margin` : "Above safety threshold"} />
         <StatCard title="Current CGPA" value={studentData.cgpa} status="success" subtitle={`Top percentile of ${studentData.branch}`} />
         <StatCard title="Active Backlogs" value={studentData.backlogs} status={studentData.backlogs > 0 ? "danger" : "success"} subtitle={studentData.backlogs > 0 ? "Requires attention" : "Eligible for Promotion"} />
-        <StatCard title="Credits Earned" value={`${studentData.semester * 16} / 160`} status="neutral" subtitle={`Semester ${studentData.semester} Sync Active`} />
+        <StatCard title="Credits Earned" value={`${creditsEarned} / 160`} status="neutral" subtitle={`Semester ${studentData.semester} Sync Active`} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* CGPA Trend Area Chart */}
         <div className="lg:col-span-2 glass rounded-[2rem] p-8 border border-white/40 shadow-lg">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="font-black text-slate-800 text-lg tracking-tight">Engagement Trajectory</h3>
+            <h3 className="font-black text-slate-800 text-lg tracking-tight">CGPA Progression</h3>
             <button className="text-slate-400 hover:text-indigo-600 transition-colors"><MoreHorizontal /></button>
           </div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={attendanceData}>
+              <AreaChart data={areaChartData}>
+                <defs>
+                  <linearGradient id="colorCgpa" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 11, fontWeight: 'bold'}} dy={10} />
-                <YAxis hide />
-                <Tooltip 
-                  cursor={{fill: '#f8fafc'}}
-                  contentStyle={{borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', padding: '12px'}}
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 11, fontWeight: 'bold' }} dy={10} />
+                <YAxis hide domain={[0, 10]} />
+                <Tooltip
+                  cursor={{ stroke: '#6366f1', strokeWidth: 1, strokeDasharray: '5 5' }}
+                  contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', padding: '12px' }}
                 />
-                <Bar dataKey="value" radius={[10, 10, 0, 0]} barSize={40}>
-                  {attendanceData.map((entry, index) => (
-                    <Cell key={index} fill={entry.value < 75 ? '#f43f5e' : '#6366f1'} />
-                  ))}
-                </Bar>
-              </BarChart>
+                <Area type="monotone" dataKey="cgpa" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorCgpa)" />
+              </AreaChart>
             </ResponsiveContainer>
           </div>
         </div>
@@ -105,7 +146,7 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
             <ResponsiveContainer width="100%" height="100%">
               <RadarChart cx="50%" cy="50%" outerRadius="80%" data={difficultyData}>
                 <PolarGrid stroke="#e2e8f0" />
-                <PolarAngleAxis dataKey="subject" tick={{fill: '#64748b', fontSize: 10, fontWeight: '800'}} />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10, fontWeight: '800' }} />
                 <Radar
                   name="Difficulty"
                   dataKey="A"
@@ -153,9 +194,8 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
                 <div className="flex-1">
                   <h4 className="font-bold text-slate-800 mb-1">{event.event}</h4>
                   <div className="flex items-center gap-2">
-                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${
-                      event.type === 'exam' ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600'
-                    }`}>
+                    <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full ${event.type === 'exam' ? 'bg-rose-50 text-rose-600' : 'bg-blue-50 text-blue-600'
+                      }`}>
                       {event.type}
                     </span>
                     <span className="text-xs text-slate-500 font-medium">
@@ -196,11 +236,10 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
                     <h4 className="font-black text-slate-800 text-sm mb-1">{placement.company}</h4>
                     <p className="text-xs text-slate-500 font-medium">{placement.role}</p>
                   </div>
-                  <div className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase ${
-                    placement.match >= 90 ? 'bg-emerald-100 text-emerald-700' :
-                    placement.match >= 80 ? 'bg-indigo-100 text-indigo-700' :
-                    'bg-amber-100 text-amber-700'
-                  }`}>
+                  <div className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase ${placement.match >= 90 ? 'bg-emerald-100 text-emerald-700' :
+                      placement.match >= 80 ? 'bg-indigo-100 text-indigo-700' :
+                        'bg-amber-100 text-amber-700'
+                    }`}>
                     {placement.match}% match
                   </div>
                 </div>
@@ -262,7 +301,7 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
   );
 };
 
-const StatCard: React.FC<{title: string, value: string | number, status: string, subtitle: string}> = ({title, value, status, subtitle}) => {
+const StatCard: React.FC<{ title: string, value: string | number, status: string, subtitle: string }> = ({ title, value, status, subtitle }) => {
   const statusColors = {
     success: 'bg-emerald-500',
     warning: 'bg-amber-500',

@@ -36,19 +36,18 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, stud
       <aside className="w-64 bg-white border-r border-slate-200 flex flex-col hidden lg:flex shadow-sm">
         <div className="p-8 flex items-center gap-3">
           <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-indigo-100">K</div>
-          <h1 className="font-bold text-slate-800 text-lg leading-tight tracking-tight">KITSW<br/><span className="text-indigo-600">Compass</span></h1>
+          <h1 className="font-bold text-slate-800 text-lg leading-tight tracking-tight">KITSW<br /><span className="text-indigo-600">Compass</span></h1>
         </div>
-        
+
         <nav className="flex-1 px-4 space-y-1">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => handleTabChange(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 group ${
-                activeTab === item.id 
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 font-medium translate-x-1' 
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 group ${activeTab === item.id
+                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200 font-medium translate-x-1'
                   : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
-              }`}
+                }`}
             >
               <item.icon size={20} className={activeTab === item.id ? 'text-white' : 'group-hover:scale-110 transition-transform'} />
               {item.label}
@@ -57,13 +56,13 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, stud
         </nav>
 
         <div className="p-6 border-t border-slate-100">
-          <button 
+          <button
             onClick={onSyncProfile}
             className="w-full mb-4 py-3 bg-indigo-50 text-indigo-600 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-indigo-100 transition-colors"
           >
             <Sparkles size={14} /> AI Profile Sync
           </button>
-          
+
           <div className="flex items-center gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
             <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold overflow-hidden border-2 border-white shadow-sm">
               <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${studentData.name}`} alt="Avatar" />
@@ -85,15 +84,36 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, stud
             </button>
             <h2 className="text-lg lg:text-xl font-black text-slate-800 tracking-tight capitalize">{activeTab.replace('-', ' ')}</h2>
           </div>
-          
+
           <div className="flex items-center gap-2 lg:gap-4">
-            <div className="hidden sm:flex flex-col items-end mr-2">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Status</span>
-              <span className="text-xs font-bold text-indigo-600">{studentData.branch || 'N/A'} - {studentData.semester ? `SEM ${studentData.semester}` : 'Sync Required'}</span>
+            <div className="hidden md:flex items-center gap-3 mr-4">
+              <div className="flex flex-col items-end">
+                <span className="text-sm font-bold text-slate-800">{studentData.name}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{studentData.rollNumber}</span>
+              </div>
+
+              <div className="flex gap-2">
+                <div className="px-3 py-1 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full text-xs font-bold shadow-sm flex items-center gap-1">
+                  <Sparkles size={10} /> {studentData.cgpa} CGPA
+                </div>
+                <div className={`px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 ${studentData.attendance >= 75 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                  }`}>
+                  {studentData.attendance}% Att.
+                </div>
+              </div>
             </div>
-            <button className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition-all active:scale-95 shadow-sm">
-              <User size={20} />
+
+            <button
+              onClick={onSyncProfile}
+              className="p-2 rounded-xl bg-slate-100 text-indigo-600 hover:bg-slate-200 transition-all active:scale-95 shadow-sm"
+              title="Sync Profile"
+            >
+              <Sparkles size={20} />
             </button>
+
+            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 overflow-hidden border border-slate-200">
+              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${studentData.name}`} alt="Avatar" className="w-full h-full" />
+            </div>
           </div>
         </header>
 
@@ -141,11 +161,10 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, stud
                     <button
                       key={item.id}
                       onClick={() => handleTabChange(item.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all ${
-                        activeTab === item.id 
-                          ? 'bg-indigo-600 text-white font-medium' 
+                      className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all ${activeTab === item.id
+                          ? 'bg-indigo-600 text-white font-medium'
                           : 'text-slate-500 hover:bg-slate-50'
-                      }`}
+                        }`}
                     >
                       <item.icon size={20} />
                       {item.label}
