@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Radar, RadarChart, PolarGrid, PolarAngleAxis, LineChart, Line } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Radar, RadarChart, PolarGrid, PolarAngleAxis, LineChart, Line, AreaChart, Area } from 'recharts';
 import { TrendingUp, AlertCircle, CheckCircle2, MoreHorizontal, Briefcase, Sparkles, Calendar, Clock, ArrowRight } from 'lucide-react';
 import { ACADEMIC_EVENTS, PLACEMENT_ALERTS } from '../constants';
 import { motion } from 'framer-motion';
@@ -108,7 +108,7 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
         <StatCard title="Overall Attendance" value={`${studentData.attendance}%`} status={studentData.attendance < 75 ? "warning" : "success"} subtitle={studentData.attendance < 75 ? `${(75 - studentData.attendance).toFixed(1)}% below safe margin` : "Above safety threshold"} />
         <StatCard title="Current CGPA" value={studentData.cgpa} status="success" subtitle={`Top percentile of ${studentData.branch}`} />
         <StatCard title="Active Backlogs" value={studentData.backlogs} status={studentData.backlogs > 0 ? "danger" : "success"} subtitle={studentData.backlogs > 0 ? "Requires attention" : "Eligible for Promotion"} />
-        <StatCard title="Credits Earned" value={`${creditsEarned} / 160`} status="neutral" subtitle={`Semester ${studentData.semester} Sync Active`} />
+        <StatCard title="Credits Earned" value={`${studentData.creditsEarned} / 160`} status="neutral" subtitle={`Semester ${studentData.semester} Sync Active`} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -237,8 +237,8 @@ const Dashboard: React.FC<DashboardProps> = ({ studentData, onSyncClick }) => {
                     <p className="text-xs text-slate-500 font-medium">{placement.role}</p>
                   </div>
                   <div className={`px-2 py-1 rounded-lg text-[10px] font-black uppercase ${placement.match >= 90 ? 'bg-emerald-100 text-emerald-700' :
-                      placement.match >= 80 ? 'bg-indigo-100 text-indigo-700' :
-                        'bg-amber-100 text-amber-700'
+                    placement.match >= 80 ? 'bg-indigo-100 text-indigo-700' :
+                      'bg-amber-100 text-amber-700'
                     }`}>
                     {placement.match}% match
                   </div>

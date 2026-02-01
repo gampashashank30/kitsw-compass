@@ -208,65 +208,63 @@ const AcademicLedger: React.FC<AcademicLedgerProps> = ({ studentData }) => {
           </div>
         </div>
       </div>
-    </div>
-
-      {/* Detailed Grade Table */ }
-  <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden">
-    <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-      <h3 className="font-black text-slate-800 tracking-tight flex items-center gap-2">
-        <BookOpen className="text-indigo-600" size={20} />
-        Detailed Grade Sheet
-      </h3>
-      <button className="text-xs font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700 flex items-center gap-2">
-        Download PDF <Sparkles size={14} />
-      </button>
-    </div>
-    <div className="overflow-x-auto">
-      <table className="w-full text-left border-collapse">
-        <thead>
-          <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400">
-            <th className="p-6">Course</th>
-            <th className="p-6 text-center">Credits</th>
-            <th className="p-6 text-center">CIE (150)</th>
-            <th className="p-6 text-center">MSE (45)</th>
-            <th className="p-6 text-center">Minors (30)</th>
-            <th className="p-6 text-center">GCBAA (30)</th>
-            <th className="p-6 text-center">ESE (100)</th>
-            <th className="p-6 text-center">Total (100%)</th>
-            <th className="p-6 text-center">Grade</th>
-            <th className="p-6 text-center">Points</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-100">
-          {courses.map((course: any) => {
-            const totalInternal = course.cie; // Out of 150
-            const ese = course.ese || 0;
-            const total = totalInternal + ese;
-            const percentage = (total / 250) * 100;
-            const gradeInfo = percentage >= 90 ? { g: 'S', p: 10 } : percentage >= 80 ? { g: 'A+', p: 9 } : percentage >= 70 ? { g: 'A', p: 8 } : { g: 'B+', p: 7 };
-
-            return (
-              <tr key={course.name} className="hover:bg-slate-50 transition-colors group">
-                <td className="p-6 font-bold text-slate-800">{course.name}</td>
-                <td className="p-6 text-center font-medium text-slate-500">4</td>
-                <td className="p-6 text-center font-bold text-slate-700">{course.cie}</td>
-                <td className="p-6 text-center text-slate-500">{course.mse}</td>
-                <td className="p-6 text-center text-slate-500">{course.minors.join(' + ')}</td>
-                <td className="p-6 text-center text-slate-500">{course.gcbaa}</td>
-                <td className="p-6 text-center font-medium text-slate-400">{course.ese || '-'}</td>
-                <td className="p-6 text-center font-bold text-indigo-600">{percentage.toFixed(1)}%</td>
-                <td className="p-6 text-center">
-                  <span className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-black">{gradeInfo.g}</span>
-                </td>
-                <td className="p-6 text-center font-bold text-slate-800">{gradeInfo.p}</td>
+      {/* Detailed Grade Table */}
+      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl shadow-slate-200/40 overflow-hidden">
+        <div className="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <h3 className="font-black text-slate-800 tracking-tight flex items-center gap-2">
+            <BookOpen className="text-indigo-600" size={20} />
+            Detailed Grade Sheet
+          </h3>
+          <button className="text-xs font-black text-indigo-600 uppercase tracking-widest hover:text-indigo-700 flex items-center gap-2">
+            Download PDF <Sparkles size={14} />
+          </button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                <th className="p-6">Course</th>
+                <th className="p-6 text-center">Credits</th>
+                <th className="p-6 text-center">CIE (150)</th>
+                <th className="p-6 text-center">MSE (45)</th>
+                <th className="p-6 text-center">Minors (30)</th>
+                <th className="p-6 text-center">GCBAA (30)</th>
+                <th className="p-6 text-center">ESE (100)</th>
+                <th className="p-6 text-center">Total (100%)</th>
+                <th className="p-6 text-center">Grade</th>
+                <th className="p-6 text-center">Points</th>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {courses.map((course: any) => {
+                const totalInternal = course.cie; // Out of 150
+                const ese = course.ese || 0;
+                const total = totalInternal + ese;
+                const percentage = (total / 250) * 100;
+                const gradeInfo = percentage >= 90 ? { g: 'S', p: 10 } : percentage >= 80 ? { g: 'A+', p: 9 } : percentage >= 70 ? { g: 'A', p: 8 } : { g: 'B+', p: 7 };
+
+                return (
+                  <tr key={course.name} className="hover:bg-slate-50 transition-colors group">
+                    <td className="p-6 font-bold text-slate-800">{course.name}</td>
+                    <td className="p-6 text-center font-medium text-slate-500">4</td>
+                    <td className="p-6 text-center font-bold text-slate-700">{course.cie}</td>
+                    <td className="p-6 text-center text-slate-500">{course.mse}</td>
+                    <td className="p-6 text-center text-slate-500">{course.minors.join(' + ')}</td>
+                    <td className="p-6 text-center text-slate-500">{course.gcbaa}</td>
+                    <td className="p-6 text-center font-medium text-slate-400">{course.ese || '-'}</td>
+                    <td className="p-6 text-center font-bold text-indigo-600">{percentage.toFixed(1)}%</td>
+                    <td className="p-6 text-center">
+                      <span className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-xs font-black">{gradeInfo.g}</span>
+                    </td>
+                    <td className="p-6 text-center font-bold text-slate-800">{gradeInfo.p}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-  </div>
-    </div >
   );
 };
 

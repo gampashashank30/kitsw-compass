@@ -34,6 +34,7 @@ export const MOCK_STUDENT_DATA = {
   attendance: 84.5,
   backlogs: 0,
   cgpa: 8.84,
+  creditsEarned: 46,
   courses: [
     { name: 'BEE', cie: 128, mse: 45, minors: [19, 14], gcbaa: 50 },
     { name: 'COA', cie: 118, mse: 31, minors: [20, 17], gcbaa: 50 },

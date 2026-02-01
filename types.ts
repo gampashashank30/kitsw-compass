@@ -43,6 +43,7 @@ export interface StudentProfile {
   attendance: number; // percentage
   backlogs: number;
   cgpa: number;
+  creditsEarned: number;
 }
 
 export interface ChatMessage {
