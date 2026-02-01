@@ -13,12 +13,15 @@ if (rootElement) {
         <App />
       </React.StrictMode>
     );
-    // Set global flag to stop the timeout timer
+    // Mark application as successfully mounted to stop the global timeout timer
     (window as any).reactMounted = true;
+    console.debug("KITSW Compass: React Application Mounted Successfully");
   } catch (err: any) {
-    console.error("Critical Render Error:", err);
+    console.error("KITSW Compass Mount Failure:", err);
     if ((window as any).onerror) {
-      (window as any).onerror(err.message, "index.tsx", 0, 0, err);
+      (window as any).onerror(`Mount Failed: ${err.message}`, "index.tsx", 0, 0, err);
     }
   }
+} else {
+  console.error("KITSW Compass: Critical Error - Root element not found");
 }
