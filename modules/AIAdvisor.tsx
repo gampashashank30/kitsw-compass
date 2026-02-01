@@ -9,40 +9,16 @@ interface AIAdvisorProps {
 }
 
 const AIAdvisor: React.FC<AIAdvisorProps> = ({ studentData }) => {
-  // Load chat history from localStorage
-  const loadChatHistory = (): ChatMessage[] => {
-    try {
-      const saved = localStorage.getItem(`chat_history_${studentData.rollNumber}`);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return parsed.map((msg: any) => ({
-          ...msg,
-          timestamp: new Date(msg.timestamp)
-        }));
-      }
-    } catch (e) {
-      console.error('Failed to load chat history:', e);
-    }
-    return [{
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
       role: 'assistant',
       content: `Hello ${studentData.name}! I'm your Student Compass AI. I've synced with your profile: ${studentData.branch} (Roll: ${studentData.rollNumber}). How can I help you navigate your URR24 regulations today?`,
       timestamp: new Date()
-    }];
-  };
-
-  const [messages, setMessages] = useState<ChatMessage[]>(loadChatHistory);
+    }
+  ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  // Save chat history to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(`chat_history_${studentData.rollNumber}`, JSON.stringify(messages));
-    } catch (e) {
-      console.error('Failed to save chat history:', e);
-    }
-  }, [messages, studentData.rollNumber]);
 
   useEffect(() => {
     if (messages.length === 1) {
@@ -60,17 +36,16 @@ const AIAdvisor: React.FC<AIAdvisorProps> = ({ studentData }) => {
     }
   }, [messages, loading]);
 
-  const handleSend = async (customInput?: string) => {
-    const messageToSend = customInput || input;
-    if (!messageToSend.trim() || loading) return;
+  const handleSend = async () => {
+    if (!input.trim() || loading) return;
 
-    const userMsg: ChatMessage = { role: 'user', content: messageToSend, timestamp: new Date() };
+    const userMsg: ChatMessage = { role: 'user', content: input, timestamp: new Date() };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(true);
 
     try {
-      const advice = await generateAcademicAdvice(messageToSend, studentData);
+      const advice = await generateAcademicAdvice(input, studentData);
       setMessages(prev => [...prev, { role: 'assistant', content: advice, timestamp: new Date() }]);
     } catch (error) {
       setMessages(prev => [...prev, { 
@@ -148,7 +123,7 @@ const AIAdvisor: React.FC<AIAdvisorProps> = ({ studentData }) => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleSend()}
+              onKeyDown={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Query URR24 regulations..."
               className="flex-1 bg-slate-50 border border-slate-200 rounded-[1.5rem] px-6 py-4 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-slate-800 transition-all font-medium placeholder:text-slate-400"
             />
@@ -160,22 +135,31 @@ const AIAdvisor: React.FC<AIAdvisorProps> = ({ studentData }) => {
               <Send size={22} />
             </button>
           </div>
-          <div className="flex gap-2 mt-4 overflow-x-auto pb-2 scrollbar-hide">
-            {[
-              "Analyze my current performance",
-              "What subjects need attention?",
-              "Am I on track for promotion?",
-              "Placement preparation roadmap",
-              "Explain URR24 grading system"
-            ].map((text) => (
-              <button 
-                key={text}
-                onClick={() => handleSend(text)}
-                className="whitespace-nowrap px-4 py-2 bg-white text-slate-500 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 hover:text-indigo-600 border border-slate-100 transition-colors"
-              >
-                {text}
-              </button>
-            ))}
+          <div className="mt-4">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Quick Prompts</p>
+            <div className="flex flex-wrap gap-2">
+              {[
+                "Analyze my current performance",
+                "What subjects need attention?",
+                "Am I on track for promotion?",
+                "Placement preparation roadmap",
+                "Explain URR24 grading system",
+                "Detention rules?",
+                "How to get Honors?",
+                "Calculate my predicted CGPA"
+              ].map((text) => (
+                <button 
+                  key={text}
+                  onClick={() => {
+                    setInput(text);
+                    setTimeout(() => handleSend(), 100);
+                  }}
+                  className="whitespace-nowrap px-4 py-2 bg-white text-slate-600 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 hover:text-indigo-600 border border-slate-100 transition-colors"
+                >
+                  {text}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

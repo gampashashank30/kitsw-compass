@@ -32,7 +32,7 @@ const App: React.FC = () => {
       case 'attendance': return <AttendanceModule studentData={studentData} />;
       case 'ai-advisor': return <AIAdvisor studentData={studentData} />;
       case 'digital-twin': return <DigitalTwin studentData={studentData} />;
-      case 'simulator': return <Simulator />;
+      case 'simulator': return <Simulator studentData={studentData} />;
       case 'placement': return <PlacementPulse studentData={studentData} />;
       case 'exams': return <ExamHub />;
       case 'academic-ledger': return <AcademicLedger studentData={studentData} />;
