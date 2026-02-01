@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Plus, Trash2, Calculator, Info, Target, Sparkles, CheckCircle2, AlertTriangle, TrendingUp } from 'lucide-react';
+import { Plus, Trash2, Calculator, Info, Sparkles, CheckCircle2, AlertTriangle, TrendingUp, Award } from 'lucide-react';
 import { URR24_POLICIES } from '../constants.ts';
 import { checkPromotionEligibility, predictCGPA, calculateSGPA, calculateGrade, getGradePoints } from '../utils/calculations';
 import { motion } from 'framer-motion';
@@ -138,7 +138,7 @@ const Simulator: React.FC<SimulatorProps> = ({ studentData }) => {
               <h2 className="text-6xl font-black mt-2 leading-none">{predictedSGPA.toFixed(2)}</h2>
               <p className="text-indigo-100 text-sm mt-4 leading-relaxed font-medium">Based on your URR24 configuration. This corresponds to approximately <span className="underline decoration-indigo-300">{(predictedSGPA * 9.5).toFixed(1)}%</span>.</p>
             </div>
-            <Target className="absolute -bottom-6 -right-6 text-white/10" size={160} />
+            <Award className="absolute -bottom-6 -right-6 text-white/10" size={160} />
           </div>
 
           <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
